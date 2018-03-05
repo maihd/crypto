@@ -21,7 +21,7 @@ __base64__ int base64_decode(const unsigned char* src,
 #define BASE64_TABLE2 "0123456789+/"
 #define BASE64_TABLE  BASE64_TABLE0 BASE64_TABLE1 BASE64_TABLE2
 
-static unsigned int base64_index(unsigned int c)
+static unsigned char base64_index(unsigned int c)
 {
     switch (c)
     {
