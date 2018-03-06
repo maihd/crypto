@@ -16,10 +16,20 @@ __base64__ int base64_decode(const unsigned char* src,
 #ifdef BASE64_IMPLEMENTATION
 /* BEGIN OF IMPLEMENTATION */
 
-#define BASE64_TABLE0 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-#define BASE64_TABLE1 "abcdefghijklmnopqrstuvwxyz"
-#define BASE64_TABLE2 "0123456789+/"
-#define BASE64_TABLE  BASE64_TABLE0 BASE64_TABLE1 BASE64_TABLE2
+#define base64_value(idx) (base64_table[idx])
+
+static const char base64_table[] = {
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+    'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+    'Y', 'Z',
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+    'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+    'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+    'y', 'z',
+    '0', '1', '2', '3', '4', '5', '6', '7',
+    '8', '9', '+', '/',
+};
 
 static unsigned char base64_index(unsigned int c)
 {
@@ -64,10 +74,10 @@ int base64_encode(const unsigned char* src,
 	val[2] = *src++ <<  0;
 	val[3] = (val[0] | val[1] | val[2]);
 
-	*ptr++ = BASE64_TABLE[(val[3] >> 18) & 0x3F];
-	*ptr++ = BASE64_TABLE[(val[3] >> 12) & 0x3F];
-	*ptr++ = BASE64_TABLE[(val[3] >>  6) & 0x3F];
-	*ptr++ = BASE64_TABLE[(val[3] >>  0) & 0x3F];
+	*ptr++ = base64_value((val[3] >> 18) & 0x3F);
+	*ptr++ = base64_value((val[3] >> 12) & 0x3F);
+	*ptr++ = base64_value((val[3] >>  6) & 0x3F);
+	*ptr++ = base64_value((val[3] >>  0) & 0x3F);
     }
 
     /* Add padding characters 
@@ -79,17 +89,17 @@ int base64_encode(const unsigned char* src,
 	val[1] = *src++ << 0;
 	val[3] = val[0] | val[1];
 
-	*ptr++ = BASE64_TABLE[(val[3] >> 10) & 0x3F];
-	*ptr++ = BASE64_TABLE[(val[3] >>  4) & 0x3F];
-	*ptr++ = BASE64_TABLE[(val[3] <<  2) & 0x3F];
+	*ptr++ = base64_value((val[3] >> 10) & 0x3F);
+	*ptr++ = base64_value((val[3] >>  4) & 0x3F);
+	*ptr++ = base64_value((val[3] <<  2) & 0x3F);
 	*ptr++ = '=';
 	break;
 	
     case 1:
 	val[3] = *src;
 
-	*ptr++ = BASE64_TABLE[(val[3] >>  2) & 0x3F];
-	*ptr++ = BASE64_TABLE[(val[3] <<  4) & 0x3F];
+	*ptr++ = base64_value((val[3] >>  2) & 0x3F);
+	*ptr++ = base64_value((val[3] <<  4) & 0x3F);
 	*ptr++ = '=';
 	*ptr++ = '=';
 	break;
@@ -132,6 +142,8 @@ int base64_decode(const unsigned char* src,
     
     return (int)(ptr - dst);
 }
+
+#undef base64_value
 
 /* END   OF IMPLEMENTATION */
 #endif
