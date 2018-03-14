@@ -1,4 +1,4 @@
-#define BASE64_IMPLEMENTATION
+#define BASE64_IMPL
 
 #include <stdio.h>
 #include "base64.h"
@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
     char src[128] = "Hello world";
     char dst[128];
     
-    if ((n = base64_encode((void*)src, (void*)dst, strlen(src), sizeof(dst))) < 0)
+    if ((n = base64_encode(src, strlen(src), dst, sizeof(dst))) < 0)
     {
 	printf("Error!\n");
 	return 1;
@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     printf("Src: %s\n", src);
     printf("Dst: %s\n", dst);
     
-    if ((n = base64_decode((void*)dst, (void*)src, strlen(dst), sizeof(src))) < 0)
+    if ((n = base64_decode(dst, strlen(dst), src, sizeof(src))) < 0)
     {
 	printf("Error!\n");
 	return 1;

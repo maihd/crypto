@@ -1,19 +1,42 @@
+/*******************************************
+ * Base64 encoding and decoding algorithms
+ * @author: MaiHD
+ * @license: NULL
+ * @copyright: 2018 @ ${HOME}
+ *******************************************/
+
 #ifndef __BASE64_H__
 #define __BASE64_H__
 
+#ifndef __base64__
 #define __base64__
+#endif
 
-__base64__ int base64_encode(const unsigned char* src,
-			     unsigned char* dst,
-			     int src_size,
-			     int dst_size);
+/**
+ * Encoding the normal form memory to Base64 form
+ *
+ * @param  src      : Source memory container
+ * @param  src_size : Size of source container
+ * @param  dst      : Destination memory container
+ * @param  dst_size : Size of destination container
+ * @return Number of bytes written to dst_size, -1 mean fail
+ */
+__base64__ int base64_encode(const void* src, int src_size,
+			     char* dst, int dst_size);
 
-__base64__ int base64_decode(const unsigned char* src,
-			     unsigned char* dst,
-			     int src_size,
-			     int dst_size);
+/**
+ * Decoding the Base64 form memory to normal form
+ *
+ * @param  src      : Source memory container
+ * @param  src_size : Size of source container
+ * @param  dst      : Destination memory container
+ * @param  dst_size : Size of destination container
+ * @return Number of bytes written to dst_size, -1 mean fail
+ */
+__base64__ int base64_decode(const char* src, int src_size,
+			     void* dst, int dst_size);
 
-#ifdef BASE64_IMPLEMENTATION
+#ifdef BASE64_IMPL
 /* BEGIN OF IMPLEMENTATION */
 
 #define base64_value(idx) (base64_table[idx])
@@ -47,14 +70,14 @@ static unsigned char base64_index(unsigned int c)
     return 0;
 }
 
-int base64_encode(const unsigned char* src,
-		  unsigned char* dst,
-		  int src_size,
-		  int dst_size)
+/* @function: base64_encode */
+int base64_encode(const void* src_param, int src_size,
+		  char* dst, int dst_size)
 {
     int i, n;
-    unsigned int   val[4];    /* 0 -> 2 : src, 3 : sum of 0 -> 2 */
-    unsigned char* ptr = dst; /* result */
+    char* ptr = dst; /* result */
+    unsigned int val[4];    /* 0 -> 2 : src, 3 : sum of 0 -> 2 */
+    const unsigned char* src = (unsigned char*)src_param;
     
     /* The size of destination storage must be greater equal 
      * than the size of source storage
@@ -108,14 +131,13 @@ int base64_encode(const unsigned char* src,
     return (int)(ptr - dst);
 }
 
-int base64_decode(const unsigned char* src,
-		  unsigned char* dst,
-		  int src_size,
-		  int dst_size)
+/* @function: base64_decode */
+int base64_decode(const char* src, int src_size,
+		  void* dst, int dst_size)
 {
     int i, n;
-    unsigned char  val[4];    /* Converted */
-    unsigned char* ptr = dst; /* Result    */
+    unsigned char  val[4];                    /* Converted */
+    unsigned char* ptr = (unsigned char*)dst; /* Result    */
     
     /* The size of destination storage must be greater equal 
      * than the size of source storage
@@ -140,7 +162,7 @@ int base64_decode(const unsigned char* src,
 	*ptr++ = (val[2] << 6) | (val[3] >> 0);
     }
     
-    return (int)(ptr - dst);
+    return (int)(ptr - (unsigned char*)dst);
 }
 
 #undef base64_value
